@@ -1,0 +1,98 @@
+using System;
+namespace Pokemon
+{
+    class TypeChart
+    {
+        
+        public enum PokemonTypes {Normal, Fire, Water, Grass, Electric, Ice, Fighting, Poison, Ground,
+                                  Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel, Fairy, Null};
+        
+        static void Main()
+        {	
+            WelcomeScreen();
+        }
+    
+        static void WelcomeScreen()
+        {
+            
+            string quitKey = "a";
+            while (!quitKey.Equals("q"))
+            {
+                Console.WriteLine("Welcome to the Pokemon Attack/Defense Type checker!\n");
+                Console.WriteLine("Select an attack type from one of the following:\n");
+                Console.WriteLine("Normal, Fire, Water, Grass, Electric, Ice, Fighting, Poison, Ground, Flying, Psychic, Bug, Rock, Ghost, Dragon, Dark, Steel, Fairy");
+                String attack = Console.ReadLine();
+                Console.WriteLine("Select the first type of the Pokemon being attacked:");
+                String defense1 = Console.ReadLine();
+                Console.WriteLine("Select the second type of the Pokemon being attacked, or type 'Null' for no second type:");
+                String defense2 = Console.ReadLine();
+                double modifier = GetModifier(attack, defense1, defense2);
+                if(modifier == -1.0)
+                {
+                    GoBackToWelcomeScreen();
+                }
+				string defense2Input = "";
+				if(!defense2.Equals("Null"))
+				{
+					defense2Input = "/" + defense2;
+				}
+                Console.WriteLine("An attack with type {0} is {1}x effective on a Pokemon with type {2}{3}.\n", attack, modifier, defense1, defense2Input);
+                Console.WriteLine("Press 't' to try again or 'q' to quit.\n");
+                quitKey = Console.ReadLine();
+            }
+        }
+        
+        static void GoBackToWelcomeScreen()
+        {
+            Console.WriteLine("One of the inputs was invalid!\n");
+            WelcomeScreen();
+        }
+    
+        static double GetModifier(string attack, string defense1, string defense2)
+        {
+            int attackType = ParseType(attack);
+            int defense1Type = ParseType(defense1);
+            int defense2Type = ParseType(defense2);
+            if(attackType == -1 || defense1Type == -1 || defense2Type == -1 || defense1Type == defense2Type)
+            {
+                return -1.0;
+            }
+            
+                                                        //NOR, FIR, WAT, GRA, ELE, ICE, FIG, POI, GRO, FLY, PSY, BUG, ROC, GHO, DRA, DAR, STE, FAI
+            double[,] modifierArray = new double[19,18] {{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0},  //Normal
+                                                         {1.0, 0.5, 2.0, 0.5, 1.0, 0.5, 1.0, 1.0, 2.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 0.5},  //Fire
+                                                         {1.0, 0.5, 0.5, 2.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0},  //Water
+                                                         {1.0, 2.0, 0.5, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 2.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},  //Grass
+                                                         {1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0},  //Electric
+                                                         {1.0, 2.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 2.0, 1.0},  //Ice
+                                                         {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 2.0, 0.5, 0.5, 1.0, 1.0, 0.5, 1.0, 2.0},  //Fighting
+                                                         {1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.5, 0.5, 2.0, 1.0, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5},  //Poison
+                                                         {1.0, 1.0, 2.0, 2.0, 0.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0},  //Ground
+                                                         {1.0, 1.0, 1.0, 0.5, 2.0, 2.0, 0.5, 1.0, 0.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0},  //Flying
+                                                         {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0},  //Psychic
+                                                         {1.0, 2.0, 1.0, 0.5, 1.0, 1.0, 0.5, 1.0, 0.5, 2.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0},  //Bug
+                                                         {0.5, 0.5, 2.0, 2.0, 1.0, 1.0, 2.0, 0.5, 2.0, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0},  //Rock
+                                                         {0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.5, 1.0, 1.0, 1.0, 0.5, 1.0, 2.0, 1.0, 2.0, 1.0, 1.0},  //Ghost
+                                                         {1.0, 0.5, 0.5, 0.5, 0.5, 2.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 2.0},  //Dragon
+                                                         {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 2.0, 1.0, 1.0, 1.0, 0.0, 2.0, 1.0, 0.5, 1.0, 0.5, 1.0, 2.0},  //Dark
+                                                         {0.5, 2.0, 1.0, 0.5, 1.0, 0.5, 2.0, 0.0, 2.0, 0.5, 0.5, 0.5, 0.5, 1.0, 0.5, 1.0, 0.5, 0.5},  //Steel
+                                                         {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, 2.0, 1.0, 1.0, 1.0, 0.5, 1.0, 1.0, 0.0, 0.5, 2.0, 1.0},  //Fairy
+                                                         {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}}; //Null
+            
+            return modifierArray[defense1Type,attackType] * modifierArray[defense2Type,attackType];
+        }
+    
+        static int ParseType(string test)
+        {
+            PokemonTypes pokeType;
+            if(Enum.TryParse(test, true, out pokeType))
+            {
+                return Convert.ToInt32(pokeType);
+            }
+            else
+            {
+                return -1;
+            }
+        }
+    }
+}
